@@ -61,14 +61,14 @@ app.get('/items', (req, response) => {
 
 app.get('/inventory', (req, response) => {
 
-  client.query('select * from inventory', (err, res) => {
-    if (err) throw err;
-    for (let row of res.rows) {
-      // console.log(JSON.stringify(res.rows));
-    }
-    // client.end();
-    response.send(res.rows)
-  });
+  // client.query('select * from inventory', (err, res) => {
+  //   if (err) throw err;
+  //   for (let row of res.rows) {
+  //     // console.log(JSON.stringify(res.rows));
+  //   }
+  //   // client.end();
+  //   response.send(res.rows)
+  // });
 })
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`))
