@@ -59,6 +59,17 @@ app.get('/items', (req, response) => {
   });
 })
 
+app.get('/sales', (req, response) => {
+  client.query('select * from sales', (err, res) => {
+    if (err) throw err;
+    for (let row of res.rows) {
+      // console.log(JSON.stringify(res.rows));
+    }
+    // client.end();
+    response.send(res.rows)
+  });
+})
+
 app.get('/inventory', (req, response) => {
 
   // client.query('select * from inventory', (err, res) => {
