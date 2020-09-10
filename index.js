@@ -5,8 +5,11 @@ const PORT = process.env.PORT || 5000
 const app = express();
 const { Client } = require('pg');
 const cors = require('cors')
+const bodyParser = require('body-parser');
 const { doesNotMatch } = require('assert');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors())
 
 const client = new Client({
@@ -49,7 +52,7 @@ app.get('/test', (req, res) => {
 
 app.get('/items', (req, response) => {
 
-  client.query('select * from items', (err, res) => {
+  client.query(`select * from items`, (err, res) => {
     if (err) throw err;
     for (let row of res.rows) {
       // console.log(JSON.stringify(res.rows));
@@ -59,8 +62,20 @@ app.get('/items', (req, response) => {
   });
 })
 
+app.post('/items/add', function (req, res) {
+  const item = req.body;
+  client.query(`
+    insert into items
+    (name, buy_price, sell_price, category, quantity)
+    VALUES
+    (\'${item.name}\', ${item.buy_price}, ${item.sell_price}, \'${item.category}\', ${item.quantity})
+  `)
+
+  res.send(item);
+})
+
 app.get('/sales', (req, response) => {
-  client.query('select * from sales', (err, res) => {
+  client.query(`select * from items`, (err, res) => {
     if (err) throw err;
     for (let row of res.rows) {
       // console.log(JSON.stringify(res.rows));
