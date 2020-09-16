@@ -69,9 +69,31 @@ app.post('/items/add', function (req, res) {
     (name, buy_price, sell_price, category, quantity)
     VALUES
     (\'${item.name}\', ${item.buy_price}, ${item.sell_price}, \'${item.category}\', ${item.quantity})
-  `)
-
+  `);
   res.send(item);
+})
+
+app.get('/items/:id', (req, response) => {
+  client.query(`select * from items where id = ${req.params.id}`, (err, res) => {
+    if (err) throw err;
+    response.send(res.rows[0]);
+  });
+})
+
+app.put('/items/:id', (req, response) => {
+  const item = req.body;
+  client.query(`update items
+                  set name=\'${item.name}\',
+                  buy_price=${item.buy_price},
+                  sell_price=${item.sell_price},
+                  category=\'${item.category}\',
+                  quantity=${item.quantity}
+                where id=${req.params.id}`, (err, res) => {
+    if (err) {
+      throw err;
+    }
+    response.send(res.rows[0]);
+  });
 })
 
 app.get('/sales', (req, response) => {
