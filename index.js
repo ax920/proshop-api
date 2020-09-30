@@ -73,7 +73,25 @@ app.put('/items/:id', (req, response) => {
   });
 })
 
+app.post('/items/quantity', (req, response) => {
+  const item = req.body;
+  client.query(`update items
+                  set quantity=${item.quantity}
+                where id=${item.id}`, (err, res) => {
+    if (err) throw err;
+    console.log(res);
+    response.send(res);
+  });
+})
+
 app.get('/sales', (req, response) => {
+  client.query(`select * from sales`, (err, res) => {
+    if (err) throw err;
+    response.send(res.rows)
+  });
+})
+
+app.post('/sales/purchase', (req, response) => {
   client.query(`select * from sales`, (err, res) => {
     if (err) throw err;
     response.send(res.rows)
