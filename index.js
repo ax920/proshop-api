@@ -120,12 +120,47 @@ app.get('/inventory', (req, response) => {
 })
 
 app.post('/login', (req, res) => {
+  const credentials = req.body.credentials;
   axios.post('https://dev-511043.okta.com/api/v1/authn', {
-    username: 'alvin.xu920@gmail.com',
-    password: 'L0ckd0wn'
+    username: credentials.username,
+    password: credentials.password
   })
     .then(function (response) {
-      console.log("data", response.data);
+      res.send(response.data)
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.send(error)
+    });
+})
+
+app.post('/tokens', (req, res) => {
+  const data = req.body;
+  const headers = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  };
+  const params = `code=${data.code}&grant_type=${data.grant_type}&redirect_uri=${data.redirect_uri}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
+  axios.post(`${process.env.ORG_URL}/oauth2/v1/token`, params, headers)
+    .then(function (response) {
+      res.send(response.data)
+    })
+    .catch(function (error) {
+      res.send(error)
+    });
+})
+
+app.post('/introspect', (req, res) => {
+  const data = req.body;
+  const headers = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }
+  };
+  const params = `token=${data.token}&token_type_hint=${data.token_type_hint}&client_id=${process.env.CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}`;
+  axios.post(`${process.env.ORG_URL}/oauth2/v1/introspect`, params, headers)
+    .then(function (response) {
       res.send(response.data)
     })
     .catch(function (error) {
